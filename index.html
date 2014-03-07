@@ -75,6 +75,12 @@
                 'nik\u0313qa\u03137',
                 'word2',
                 'word3'
+            ],
+            wordsCollected : [
+                true,
+                false,
+                false,
+                false
             ]
         },
         i;
@@ -84,8 +90,8 @@
         window.onkeypress = null;
     }
     function wordsAreEqual(sWord1, sWord2) {
-        var answer = this.wordsByIndex[i].length === sWord.length;
-        answer = answer && toLowerCase(sWord1) === toLowerCase(sWord2);
+        var answer = sWord1.length === sWord2.length;
+        answer = answer && sWord1.toLowerCase() === sWord2.toLowerCase();
         return answer;
     }
     function setPopupContent(wordIndex) {
@@ -132,15 +138,19 @@
             window.alert('Correct!');
         } else if (this.value.length > game.minimumWordLength) {
             for (i = 0; i < l; i++) {
-                if (wordsAreEqual(this.wordsByIndex[i], sWord)) {
-                    this.displayWord(i);
+                if (wordsAreEqual(game.wordsByIndex[i], this.value)) {
+                    setPopupContent(i);
+                    // show mask
+                    $('#mask').show();
+                    // show pop-up
+                    $('#popup').show();
                 }
             }
         }
     }
     game.check = function (sWord) {
         var i, l = this.wordsByIndex.length;
-        if (this.isCorrect(sWord)) {
+        if (game.isCorrect(sWord)) {
             return true;
         }
         return false;
@@ -148,13 +158,22 @@
     
     game.isCorrect = function (sWord) {
         // TODO: get the next expected word
-        return this.wordsByIndex[0] === sWord;
+        return wordsAreEqual(game.wordsByIndex[0], sWord);
     };
     game.hidePopup = function (e) {
         $('#mask').hide();
         $('#popup').hide();
         e.stopPropagation();
     };
+    
+    game.stages = [
+        {
+            // starting cutscene
+            // instruction, answer, things that need clicking, things
+            // end cutscene
+        }
+    ];
+    
     // Start
     $(document).ready(init);
 </script>

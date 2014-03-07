@@ -71,7 +71,7 @@
         game = {
             minimumWordLength : 3,
             wordsByIndex : [
-                'word0',
+                'Coyote',
                 'nik\u0313qa\u03137',
                 'word2',
                 'word3'
@@ -148,7 +148,7 @@
     
     game.isCorrect = function (sWord) {
         // TODO: get the next expected word
-        return 'okay' === sWord;
+        return this.wordsByIndex[0] === sWord;
     };
     game.hidePopup = function (e) {
         $('#mask').hide();

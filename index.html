@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Game Proto 2</title>
+    <style>
+        body {
+            height: 100%;
+            width: 100%;
+            padding:0;
+            margin: 0;
+        }
+        #sequence_container {
+            position: relative;
+            width: 1000px;
+            height: 500px;
+            overflow: hidden;
+        }
+        #objects, #animations {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+        }
+        #mask {
+            display: none;
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+            background-color: rgba(0,0,0,0.4);
+        }
+        #popup {
+            display: none;
+            position: absolute;
+            height: auto;
+            width: auto;
+            border: solid 1px #000;
+            background-color: #FFF;
+        }
+    </style>
+</head>
+
+<body>
+
+<p id="instructions"></p>
+<div id="sequence_container">
+    <div id="clickable_objects">
+        <img src="test.jpg" id="w001" data-clickable="true" data-word-index="1" />
+        <img src="test.jpg" id="w002" data-clickable="true" data-word-index="2" />
+        <img src="test.jpg" id="w003" data-clickable="true" data-word-index="3" />
+    </div>
+</div>
+<input id="input" />
+
+<div id="mask"></div>
+<div id="popup">
+    <img class='vocab_image' />
+    <h1 class='vocab_word'></h1>
+    <h2 class='vocab_english'></h2>
+    <p class='vocab_definition'></p>
+</div>
+
+<script type="text/javascript" src="../../libraries/jquery-2.1.0.min.js"></script>
+<script type="text/javascript" src="../../libraries/createjs-2013.12.12.min.js"></script>
+<!--script type="text/javascript" src="http://code.createjs.com/createjs-2013.12.12.min.js"></script-->
+<!--script type="text/javascript" src="http://code.jquery.com/jquery-2.1.0.min.js"></script-->
+<script type="text/javascript">
+    var $ = jQuery,
+        game = {
+            minimumWordLength : 3,
+            wordsByIndex : [
+                'word0',
+                'word1',
+                'word2',
+                'word3'
+            ]
+        },
+        i;
+    // key strokes -> input
+    window.onkeypress = function () {
+        $('#input').focus();
+        window.onkeypress = null;
+    }
+    function wordsAreEqual(sWord1, sWord2) {
+        var answer = this.wordsByIndex[i].length === sWord.length;
+        answer = answer && toLowerCase(sWord1) === toLowerCase(sWord2);
+        return answer;
+    }
+    function setPopupContent(wordIndex) {
+        var popup = document.getElementById('popup');
+        popup.getElementsByTagName('h1')[0].textContent = game.wordsByIndex[wordIndex];
+    }
+    
+    function imageClickHandler(e) {
+        var wordIndex;
+        console.log('image click');
+        // TODO: set pop-up text from e.target.getAttribute('id') or data
+        wordIndex = e.currentTarget.getAttribute('data-word-index');
+        setPopupContent(wordIndex);
+        // show mask
+        $('#mask').show();
+        // show pop-up
+        $('#popup').show();
+        e.stopPropagation();
+    }
+    function init() {
+        var i, l, images;
+        $('#mask').hide();
+        $('#popup').hide();
+        // TODO: generate images
+        images = document.getElementById('clickable_objects').getElementsByTagName('img');
+        l = images.length;
+        for (i=0; i<l; i++) {
+            images[i].onclick = imageClickHandler;
+        }
+        // popup
+        game.popup = document.getElementById('popup');
+        game.mask = document.getElementById('mask');
+        game.popup.onclick = game.hidePopup;
+        game.mask.onclick = game.hidePopup;
+        document.getElementById('input').addEventListener('input', inputChange);
+    }
+    // functions
+    function inputChange (e) {
+        var isCorrect = game.check(this.value),
+            i,
+            l = game.wordsByIndex.length;
+        if (isCorrect) {
+            // TODO: run correct animation & move to the next stage
+            window.alert('Correct!');
+        } else if (this.value.length > game.minimumWordLength) {
+            for (i = 0; i < l; i++) {
+                if (wordsAreEqual(this.wordsByIndex[i], sWord)) {
+                    this.displayWord(i);
+                }
+            }
+        }
+    }
+    game.check = function (sWord) {
+        var i, l = this.wordsByIndex.length;
+        if (this.isCorrect(sWord)) {
+            return true;
+        }
+        return false;
+    }
+    
+    game.isCorrect = function (sWord) {
+        // TODO: get the next expected word
+        return 'okay' === sWord;
+    };
+    game.hidePopup = function (e) {
+        $('#mask').hide();
+        $('#popup').hide();
+        e.stopPropagation();
+    };
+    // Start
+    $(document).ready(init);
+</script>
+
+</body>
+</html>

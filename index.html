@@ -67,8 +67,24 @@
 <!--script type="text/javascript" src="http://code.createjs.com/createjs-2013.12.12.min.js"></script-->
 <!--script type="text/javascript" src="http://code.jquery.com/jquery-2.1.0.min.js"></script-->
 <script type="text/javascript">
+    // xml parse
+  if (window.XMLHttpRequest)
+    {// code for IE7+, Firefox, Chrome, Opera, Safari
+    xmlhttp=new XMLHttpRequest();
+    }
+  else
+    {// code for IE6, IE5
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+  xmlhttp.open("GET","localData/XML/scenes.xml",false);
+  xmlhttp.send();
+  xmlDoc=xmlhttp.responseXML;
+  // end xml parse
+    
+    
     var $ = jQuery,
         game = {
+            level : 0,
             minimumWordLength : 3,
             wordsByIndex : [
                 'Coyote',
@@ -81,7 +97,8 @@
                 false,
                 false,
                 false
-            ]
+            ],
+            scenes : null
         },
         i;
     // key strokes -> input
@@ -98,6 +115,20 @@
         var popup = document.getElementById('popup');
         popup.getElementsByTagName('h1')[0].textContent = game.wordsByIndex[wordIndex];
     }
+    function setPopupPosition(x, y) {
+        var popup = document.getElementById('popup');
+        popup.setAttribute('left', x);
+        popup.setAttribute('top', y);
+    }
+    function getScenesFromXML() {
+        // TODO:
+        var i, l;
+        //xmlDoc
+        for (i = 0; i < l; i++) {
+            
+        }
+        
+    }
     
     function imageClickHandler(e) {
         var wordIndex;
@@ -105,6 +136,7 @@
         // TODO: set pop-up text from e.target.getAttribute('id') or data
         wordIndex = e.currentTarget.getAttribute('data-word-index');
         setPopupContent(wordIndex);
+        setPopupPosition(e.clientX, e.clientY);
         // show mask
         $('#mask').show();
         // show pop-up
@@ -135,10 +167,12 @@
             l = game.wordsByIndex.length;
         if (isCorrect) {
             // TODO: run correct animation & move to the next stage
+            game.level++;
             window.alert('Correct!');
         } else if (this.value.length > game.minimumWordLength) {
             for (i = 0; i < l; i++) {
                 if (wordsAreEqual(game.wordsByIndex[i], this.value)) {
+                    game.level--;
                     setPopupContent(i);
                     // show mask
                     $('#mask').show();

@@ -1,0 +1,132 @@
+scenes: [
+	{ 
+		number: 1,
+		opening: {
+			visuals: 'galaxy and image of coyote',
+			eng: 'A long time ago the rain didn't come so the plants couldn't grow to feed the people. The people were very hungry and they prayed to Tqaltkukwpi7 for help. Tqaltkukwpi7 heard the prayers of the people',
+			spl: 'spl_o_1'
+		},
+		images: [
+			{
+				xPos: '50%', 
+				yPos: '50%', 
+				img: 'images/drawingOfCoyote.png',
+				data: 'w001'
+			}
+		],
+		instruction: {
+			eng: 'Tqaltkukwpi7 needs a helper, ask for help from...',
+			spl: 'spl_i_1'
+		},
+		answer: 'Coyote',
+		words: [
+			{
+				index: 'w001',
+				eng: 'Coyote',
+				spl: 'spl_w001',
+				img: 'images/dictionary/coyote.png',
+				def: 'def_w001'
+			}
+		],
+		closing: {
+			sfx: 'coyoteLaugh'
+		}
+	},
+	{
+		number: 2,
+		opening: {
+			visuals: 'coyote appears and grins', 
+			eng: 'eng_o_2',
+			spl: 'eng_o_2'
+		},
+		images: [
+			{
+				xPos: '50%', 
+				yPos: '25%',
+				img: 'images/helloBubble.png',
+				data:'w002'
+			}
+		],
+		instruction: {
+			eng: 'Hello!',
+			spl: 'Waytk'
+		},
+		answer: 'Waytk',
+		words: [
+			{
+				index: 'w001',
+				eng: 'Coyote',
+				spl: 'spl_w001',
+				img: 'images/dictionary/coyote.png',
+				def: 'def_w001'
+			},
+			{
+				index: 'w002',
+				eng: 'Hello',
+				spl: 'Waytk',
+				img: 'images/dictionary/hello.png',
+				def: 'def_w002'
+			}
+		],
+		closing: {
+			visuals: 'Coyote Smiles',
+			sfx: 'coyoteLaugh'
+		}
+	},
+	{
+		number: 3,
+		opening: {
+			visuals: 'coyote appears and grins', 
+			eng: 'eng_o_3',
+			spl: 'spl_o_3'
+		},
+		images: [
+			{
+				xPos: '50%',
+				yPos: '50%',
+				img: 'images/coyote.png',
+				data='w001'
+			},
+			{
+				xPos: '75%',
+				yPos: '75%',
+				img: 'images/river.png',
+				data='w003'
+			}
+		],
+		instruction: {
+			eng: 'eng_i_3',
+			spl: 'spl_i_3'
+		},
+		answer: 'river',
+		words: [
+			{
+				index: 'w001',
+				eng: 'Coyote',
+				spl: 'spl_w001',
+				img: 'images/dictionary/coyote.png',
+				def: 'def_w001'
+			},
+			{
+				index: 'w002',
+				eng: 'Hello',
+				spl: 'Waytk',
+				img: 'images/dictionary/hello.png',
+				def: 'def_w002'
+			},
+			{
+				index: 'w003',
+				eng: 'river',
+				spl: 'spl_w003',
+				img: 'images/dictionary/river.png',
+				def: 'def_w003'
+			}
+		],
+		closing: {
+			eng: 'Tqaltkukwpi7 told Coyote, "make sure the salmon will be well cared for in their new home before you leave them."',
+			spl: 'spl_c_3',
+			visuals: 'vis_c_3',
+			sfx: 'sfx_c_3'
+		}
+	}
+]

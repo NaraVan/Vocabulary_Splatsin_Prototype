@@ -1,4 +1,4 @@
-// Requires jQuery to be loaded befor this script
+// jQuery & createjs need to be loaded befor this script
 ////////////////////////////////////////////////////////
 // Game Data
 ////////////////////////////////////////////////////////
@@ -9,20 +9,20 @@ var gameData = {
 	    opening: { // maybe we should make this in flash?
 	    	visuals: 'galaxy and image of coyote',
 	    	    eng: "A long time ago the rain didn't come so the plants couldn't grow to feed the people. The people were very hungry and they prayed to Tqaltkukwpi7 for help. Tqaltkukwpi7 heard the prayers of the people",
-	    	    spl: 'spl_o_1'
+	    	    spl: ""
 	    },
 	    images: [ // images will be layered in, back to front
 	    	{
                     id: 'w000', // id of the <img>
                     index: 0, // word index for quick lookup in dictionary
-		    xPos: '50%', // position it on the screen
-                    yPos: '50%',
-                    img: 'images/drawingOfCoyote.jpg' // image source
+		    xPos: '40%', // position it on the screen
+                    yPos: '10%',
+                    img: 'images/coyote_fade.png' // image source
 		}
 	    ],
 	    instruction: { // top of the screen instruction
 		eng: 'Tqaltkukwpi7 needs a helper, ask for help from...',
-		spl: 'spl_i_1'
+		spl: "Tqaltkukwpi7 t&#789;in&uacute;cw kn&uacute;cwmen, s&eacute;wtsnem knúcwem telh&eacute;7en."
 	    },
 	    answer: "Sek'lap", // expected answer
 	    closing: { // maybe we should make something in flash?
@@ -40,8 +40,8 @@ var gameData = {
 		{
 		    id: 'w000',
                     index: 0,
-                    xPos: '50%',
-                    yPos: '50%',
+                    xPos: '0%',
+                    yPos: '40%',
 		    img: 'images/coyote2.png'
 		},
                 {
@@ -80,7 +80,7 @@ var gameData = {
 	    ],
             instruction: {
                 eng: 'Help coyote find the ocean. What can you follow to find the ocean?',
-                spl: 'spl_i_3'
+                spl: "Kn&uacute;cwente sek'lap tsetsetenwén&#787;s get&#789;t. St&eacute;m&#787;i kekel&eacute;pem tsetsetenw&eacute;n&#787;s get&#789;t?"
 	    },
             answer: "Ck'mu'7lucw",
 	    closing: {
@@ -164,7 +164,7 @@ function setPopupContent(wordIndex, posX, posY) {
     popup.getElementsByTagName('img')[0].src = wordObject.img; // set image
     popup.getElementsByTagName('h1')[0].textContent = wordObject.spl; // set splatsin text
     popup.getElementsByTagName('h2')[0].textContent = wordObject.eng; // set eenglish text
-    popup.getElementsByTagName('p')[0].textContent = wordObject.def; // set definition/hint
+    //popup.getElementsByTagName('p')[0].textContent = wordObject.def; // set definition/hint
     popup.style.top = posY + 'px';
     popup.style.left = posX + 'px';
 }
@@ -183,14 +183,14 @@ function loadScene(iSceneNumber) {
     if (!scene) {
         // TODO: roll credits?
         alert('Tqaltkukwpi7 told Coyote, "make sure the salmon will be well cared for in their new home before you leave them."');
-        return;
+        location.reload();
+	return;
     }
+    game.currentScene = scene;
     // destroy previous domScene content
     game.domScene.innerHTML = "";
-    // add div for backgound
-    div = document.createElement('div');
-    div.setAttribute('id', 'bg');
-    game.domScene.appendChild(div);
+    // add backgound
+    document.getElementsByTagName('body')[0].className = 'scene_' + scene.number;
     // add div for clickable elements
     div = document.createElement('div');
     div.setAttribute('id', 'clickable_elements');
@@ -201,10 +201,10 @@ function loadScene(iSceneNumber) {
         // place images
         img = document.createElement('img');
         img.setAttribute('id', scene.images[i].id);
-        img.setAttribute('position', 'absolute');
+        img.style.position = 'absolute';
+        img.style.left = scene.images[i].xPos;
+        img.style.top = scene.images[i].yPos;
         img.setAttribute('src', scene.images[i].img);
-        img.setAttribute('left', scene.images[i].xPos);
-        img.setAttribute('top', scene.images[i].yPos);
         img.setAttribute('data-word-index', scene.images[i].index);
         img.setAttribute('data-clickable', 'true');
         img.onclick = imageClickHandler;
@@ -224,20 +224,30 @@ function loadScene(iSceneNumber) {
 }
 // simple play cut scene
 function playScene() {
+    var target = document.getElementById("cut_scene_images");
+    target.innerHTML = "<div id='flash_content'></div>";
+    if (game.currentScene.number === 1) {
+	    swfobject.embedSWF("images/CutScene1.swf", "flash_content", "1500", "1000", "9.0.0");
+    } else {
+	target.className = "cutscene_" + game.currentScene.number;
+    }
+    // play sound
+    game.soundInstance = createjs.Sound.play("Part" + game.currentScene.number);  // play using id.  Could also use full sourcepath or event.src.
     game.cutScene.style.display = 'block';
     // TODO: start cut scene animation
 }
 // simple stop cut scene
 function skip() {
     game.cutScene.style.display = 'none';
+    game.soundInstance.stop();
     // TODO: stop and unload cut scene animation
 }
 // image click event handler
 function imageClickHandler(e) {
     var wordIndex;
-    console.log('image click');
     // get index that was stored in the img object
     wordIndex = e.currentTarget.getAttribute('data-word-index');
+    console.log('image click ' + wordIndex);
     // collect the word clicked!
     game.wordsCollected[wordIndex] = true;
     // set a popup based on mouse position
@@ -246,6 +256,11 @@ function imageClickHandler(e) {
     jQuery('#mask').show();
     // show pop-up
     jQuery('#popup').show();
+    // sound
+    game.soundInstance = createjs.Sound.play("word_" + wordIndex);  // play using id.  Could also use full sourcepath or event.src.
+    //game.soundInstance.addEventListener("complete", createjs.proxy(this.handleComplete, this));
+    //game.soundInstance.volume = 0.5;
+    // prevent other events
     e.stopPropagation();
 }
 // imput change event handler
@@ -258,6 +273,10 @@ function inputChange (e) {
         // TODO: run correct animation & move to the next stage
         game.level++;
         game.currentSceneIndex++;
+    // sound
+    game.soundInstance = createjs.Sound.play("Correct");  // play using id.  Could also use full sourcepath or event.src.
+    //game.soundInstance.addEventListener("complete", createjs.proxy(this.handleComplete, this));
+    game.soundInstance.volume = 0.5;
         window.alert('Correct!');
         loadScene(game.currentSceneIndex)
         this.value='';
@@ -291,6 +310,42 @@ game.hidePopup = function (e) {
 };
 // Init
 function init() {
+////////////////////////////////////////////////////////
+// Sound
+////////////////////////////////////////////////////////
+console.log('sounds...')
+    // if initializeDefaultPlugins returns false, we cannot play sound
+    if (createjs.Sound.initializeDefaultPlugins()) {
+	console.log('loading')
+	var audioPath = "sounds/";
+	var manifest = [
+	    {id:"Correct", src: "131660__bertrof__game-sound-correct.mp3"},
+	    {id:"Music", src:"Kosta_T_-_Metro_is_breathing.mp3"},
+	    {id:"Part1", src:"Coyote_part1.wav"},
+	    {id:"part2", src:"coyoteCall.wav"},
+	    {id:"Part3", src:"Coyote_part2.wav"},
+	    {id:"word_0", src:"seklap.wav"},
+	    {id:"word_1", src:"Hello.wav"},
+	    {id:"word_2", src:"River.wav"}
+	];
+	createjs.Sound.alternateExtensions = ["mp3"];
+	createjs.Sound.addEventListener("fileload", createjs.proxy(loadHandler, this));//this.loadHandler, this));
+	// start loading all sounds:
+	createjs.Sound.registerManifest(manifest, audioPath);
+	// Event that will occur when each sound is loaded
+	function loadHandler(event) {
+	    console.log('sound loaded');
+	    // This is fired for each sound that is registered.
+	    //var instance = createjs.Sound.play("sound");  // play using id.  Could also use full sourcepath or event.src.
+	    //instance.addEventListener("complete", createjs.proxy(this.handleComplete, this));
+	    //instance.volume = 0.5;
+	}
+    } else {
+	console.log('cannot play sound');
+    }
+///////////////////////////////////////////////////////
+// set elements to starting state
+///////////////////////////////////////////////////////
     // hide the popups
     jQuery('#mask').hide();
     jQuery('#popup').hide();
@@ -307,6 +362,10 @@ function init() {
     document.getElementById('input').addEventListener('input', inputChange);
     // finally: load current scene
     loadScene(game.currentSceneIndex);
+    // play bgm
+    game.musicInstance = createjs.Sound.play("Music");  // play using id.  Could also use full sourcepath or event.src.
+    //game.soundInstance.addEventListener("complete", createjs.proxy(this.handleComplete, this));
+    game.musicInstance.volume = 0.05;
 }
 // Start
 jQuery(document).ready(init);
